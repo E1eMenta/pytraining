@@ -17,9 +17,15 @@ class Storage:
         self.save_folder.mkdir(parents=True)
         self.save_freq = save_freq
 
+    def save_checkpoint(self, path: Path, modules: Dict[str, nn.Module]):
+        path.mkdir()
+        for module_name, module in modules.items():
+            torch.save(module.state_dict(), path / module_name)
+
     def save(self, epoch: int, iteration: int, modules: Dict[str, nn.Module], metric: Dict[str, float]):
         if epoch % self.save_freq == 0:
             epoch_path = self.save_folder / str(epoch)
-            epoch_path.mkdir()
-            for module_name, module in modules.items():
-                torch.save(module.state_dict(), epoch_path / module_name)
+            self.save_checkpoint(epoch_path, modules)
+
+        epoch_last = self.save_folder / str("last")
+        self.save_checkpoint(epoch_last, modules)

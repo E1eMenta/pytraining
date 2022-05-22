@@ -1,8 +1,10 @@
-from typing import Callable, Dict, Optional, List, Any
+from typing import Callable, Dict, Optional, List, Any, Tuple
 
 import torch
 from torch import nn, optim
 from torch.utils.data import DataLoader
+
+from utils.normalization import denormalize
 
 
 class SimpleTrainer:
@@ -24,8 +26,12 @@ class SimpleTrainer:
             logger: Optional[Any] = None,
             scheduler: Optional[Any] = None,
 
+            mean: Tuple[float] = (0.0, 0.0, 0.0),
+            std: Tuple[float] = (1.0, 1.0, 1.0),
+
             device: str = "cuda",
-            visualise_keys: Optional[List[str]] = None
+            visualise_keys: Optional[List[str]] = None,
+
     ):
         self.model = model
         self.criterion = criterion
@@ -45,8 +51,22 @@ class SimpleTrainer:
         self.device = device
         self.visualise_keys = [] if visualise_keys is None else visualise_keys
 
+        self.mean = list(mean)
+        self.std = list(std)
+
         self.epoch = 0
         self.iteration = 0
+
+        self.train_iter = iter(self.train_dataloader)
+
+    def get_data(self):
+        try:
+            data = next(self.train_iter)
+        except StopIteration:
+            self.train_iter = iter(self.train_dataloader)
+            data = next(self.train_iter)
+
+        return data
 
     def train(self):
         self.model.train()
@@ -70,9 +90,10 @@ class SimpleTrainer:
 
             if self.logger is not None:
                 self.logger.log_train(
+                    epoch=self.epoch,
                     iteration=self.iteration,
-                    losses={'main': loss.item()},
-                    images={key: data[key] for key in self.visualise_keys},
+                    losses={'main': float(loss.item())},
+                    images={key: denormalize(data[key], self.mean, self.std) for key in self.visualise_keys},
                 )
 
             self.iteration += 1
@@ -90,6 +111,7 @@ class SimpleTrainer:
 
             metric = self.metric(pred, target) if self.metric is not None else None
             self.logger.log_val(
+                epoch=self.epoch,
                 iteration=self.iteration,
                 losses={'main': loss.item()},
                 metrics=metric,
@@ -98,9 +120,10 @@ class SimpleTrainer:
 
         _, avg_metrics = self.logger.end_val()
         self.storage.save(
-            self.epoch,
-            {'model': self.model, 'optimizer': self.optimizer, 'scheduler': self.scheduler},
-            avg_metrics
+            epoch=self.epoch,
+            iteration=self.iteration,
+            modules={'model': self.model, 'optimizer': self.optimizer, 'scheduler': self.scheduler},
+            mertics=avg_metrics
         )
 
         self.epoch += 1

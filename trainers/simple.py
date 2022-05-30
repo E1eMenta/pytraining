@@ -26,8 +26,8 @@ class SimpleTrainer:
             logger: Optional[Any] = None,
             scheduler: Optional[Any] = None,
 
-            mean: Tuple[float] = (0.0, 0.0, 0.0),
-            std: Tuple[float] = (1.0, 1.0, 1.0),
+            mean: Tuple[float, ...] = (0.0, 0.0, 0.0),
+            std: Tuple[float, ...] = (1.0, 1.0, 1.0),
 
             device: str = "cuda",
             visualise_keys: Optional[List[str]] = None,

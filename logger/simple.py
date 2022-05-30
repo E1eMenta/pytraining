@@ -4,7 +4,7 @@ from collections import defaultdict
 from typing import Optional, Dict, List
 
 import torch
-from tensorboardX import SummaryWriter
+from torch.utils.tensorboard import SummaryWriter
 
 
 class Logger:

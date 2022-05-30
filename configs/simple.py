@@ -11,7 +11,7 @@ from trainers.simple import SimpleTrainer
 
 class DictWrapper(Dataset):
     def __init__(self, dataset: Dataset):
-        self.dataset= dataset
+        self.dataset = dataset
 
     def __len__(self):
         return len(self.dataset)
@@ -19,6 +19,7 @@ class DictWrapper(Dataset):
     def __getitem__(self, item):
         img, target = self.dataset[item]
         return {"image": img, "label": target}
+
 
 class Config:
     def __init__(self):

@@ -5,6 +5,7 @@ from torch import nn, optim
 from torch.utils.data import Dataset
 from torchvision.models import resnet18
 
+from logger.simple import Logger
 from trainers.simple import SimpleTrainer
 
 
@@ -51,6 +52,8 @@ class Config:
                               momentum=0.9, weight_decay=5e-4)
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
 
+        logger = Logger('/cache/tmp/cifar/logs')
+
         self.trainer = SimpleTrainer(
             model=model,
             criterion=criterion,
@@ -63,7 +66,7 @@ class Config:
             input_key="image",
             target_key="label",
             storage=None,
-            logger=None,
+            logger=logger,
             scheduler=scheduler,
             mean=(0.4914, 0.4822, 0.4465),
             std=(0.2023, 0.1994, 0.2010),

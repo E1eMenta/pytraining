@@ -110,21 +110,24 @@ class SimpleTrainer:
             data["output"] = pred
 
             metric = self.metric(pred, target) if self.metric is not None else None
-            self.logger.log_val(
+            if self.logger is not None:
+                self.logger.log_val(
+                    epoch=self.epoch,
+                    iteration=self.iteration,
+                    losses={'main': loss.item()},
+                    metrics=metric,
+                    images={key: data[key][0] for key in self.visualise_keys}
+                )
+        if self.logger is not None:
+            _, avg_metrics = self.logger.end_val()
+
+        if self.storage is not None:
+            self.storage.save(
                 epoch=self.epoch,
                 iteration=self.iteration,
-                losses={'main': loss.item()},
-                metrics=metric,
-                images={key: data[key][0] for key in self.visualise_keys}
+                modules={'model': self.model, 'optimizer': self.optimizer, 'scheduler': self.scheduler},
+                mertics=avg_metrics
             )
-
-        _, avg_metrics = self.logger.end_val()
-        self.storage.save(
-            epoch=self.epoch,
-            iteration=self.iteration,
-            modules={'model': self.model, 'optimizer': self.optimizer, 'scheduler': self.scheduler},
-            mertics=avg_metrics
-        )
 
         self.epoch += 1
 

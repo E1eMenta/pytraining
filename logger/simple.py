@@ -1,7 +1,7 @@
 import os
 import time
 from collections import defaultdict
-from typing import Optional, Dict, List
+from typing import Optional, Dict, Tuple
 
 import torch
 from torch.utils.tensorboard import SummaryWriter
@@ -82,17 +82,16 @@ class Logger:
                 self.writer.add_image(f"val_images/{key}", value, global_step=self.val_iteration)
             self.val_image_counter += 1
 
-    def end_val(self):
+    def end_val(self) -> Tuple[Dict[str, float], Dict[str, float]]:
         self.val_image_counter = 0
 
-        for key, value in self.val_loss_buff.items():
-            if len(value) == 0:
-                continue
-            loss = sum(value) / len(value)
-            self.writer.add_scalar(f"val_loss/{key}", loss, global_step=self.val_iteration)
+        avg_losses = {key: (sum(value) / len(value)) for key, value in self.val_loss_buff.items() if len(value) > 0}
+        avg_metrics = {key: (sum(value) / len(value)) for key, value in self.val_metric_buff.items() if len(value) > 0}
 
-        for key, value in self.val_metric_buff.items():
-            if len(value) == 0:
-                continue
-            loss = sum(value) / len(value)
-            self.writer.add_scalar(f"val_metric/{key}", loss, global_step=self.val_iteration)
+        for key, value in avg_losses.items():
+            self.writer.add_scalar(f"val_loss/{key}", value, global_step=self.val_iteration)
+
+        for key, value in avg_metrics.items():
+            self.writer.add_scalar(f"val_metric/{key}", value, global_step=self.val_iteration)
+
+        return avg_losses, avg_metrics

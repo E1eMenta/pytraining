@@ -22,7 +22,7 @@ class Storage:
         for module_name, module in modules.items():
             torch.save(module.state_dict(), path / module_name)
 
-    def save(self, epoch: int, iteration: int, modules: Dict[str, nn.Module], metric: Dict[str, float]):
+    def save(self, epoch: int, iteration: int, modules: Dict[str, nn.Module], metrics: Dict[str, float]):
         if epoch % self.save_freq == 0:
             epoch_path = self.save_folder / str(epoch)
             self.save_checkpoint(epoch_path, modules)

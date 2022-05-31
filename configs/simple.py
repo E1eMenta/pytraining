@@ -65,7 +65,7 @@ class Config:
             optimizer=optimizer,
             train_dataloader=trainloader,
             val_dataloader=testloader,
-            steps_per_epoch=200,
+            steps_per_epoch=400,
             max_epoch=200,
             input_key="image",
             target_key="label",

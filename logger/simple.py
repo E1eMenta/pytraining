@@ -24,8 +24,8 @@ class Logger:
 
         self.loss_buff = defaultdict(float)
 
-        self.val_loss_buff = defaultdict(List[float])
-        self.val_metric_buff = defaultdict(List[float])
+        self.val_loss_buff = defaultdict(list)
+        self.val_metric_buff = defaultdict(list)
 
         os.makedirs(tb_folder, exist_ok=True)
         self.writer = SummaryWriter(tb_folder)

@@ -56,7 +56,7 @@ class Logger:
             rounded_losses = {key: round(value, 4) for key, value in losses.items()}
             print(f"Iter: {iteration} (Epoch: {epoch}). "
                   f"Losses: {rounded_losses}. "
-                  f"Time: {str(datetime.timedelta(seconds=time.time() - self.start))}.")
+                  f"Time: {str(datetime.timedelta(seconds=time.time() - self.start)):%Y-%m-%d}.")
 
         if iteration % self.image_freq == 0 and iteration > 0 and images:
             for key, value in images.items():
@@ -104,6 +104,6 @@ class Logger:
         print(f"Epoch: {self.val_epoch}. "
               f"Losses: {rounded_losses}. "
               f"Metrics: {rounded_metrics}. "
-              f"Time: {round(time.time() - self.val_start)}.")
+              f"Time: {round(time.time() - self.val_start)}s.")
 
         return avg_losses, avg_metrics

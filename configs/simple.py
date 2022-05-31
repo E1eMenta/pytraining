@@ -60,7 +60,7 @@ class Config:
         self.trainer = SimpleTrainer(
             model=model,
             criterion=criterion,
-            metric=None,
+            metric=metric,
             optimizer=optimizer,
             train_dataloader=trainloader,
             val_dataloader=testloader,

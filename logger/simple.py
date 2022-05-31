@@ -50,7 +50,7 @@ class Logger:
                 self.writer.add_scalar(f"train_loss/{key}", value, global_step=iteration)
 
         if iteration % self.print_freq == 0 and iteration > 0:
-            rounded_losses = {key: round(value, 2) for key, value in losses.items()}
+            rounded_losses = {key: round(value, 4) for key, value in losses.items()}
             print(f"Iter: {iteration} (Epoch: {epoch}). "
                   f"Losses: {rounded_losses}. "
                   f"Time: {round(time.time() - self.start)}.")
@@ -96,9 +96,11 @@ class Logger:
         for key, value in avg_metrics.items():
             self.writer.add_scalar(f"val_metric/{key}", value, global_step=self.val_iteration)
 
+        rounded_losses = {key: round(value, 4) for key, value in avg_losses.items()}
+        rounded_metrics = {key: round(value, 4) for key, value in avg_metrics.items()}
         print(f"Epoch: {self.val_epoch}. "
-              f"Losses: {avg_losses}. "
-              f"Metrics: {avg_metrics}. "
+              f"Losses: {rounded_losses}. "
+              f"Metrics: {rounded_metrics}. "
               f"Time: {round(time.time() - self.val_start)}.")
 
         return avg_losses, avg_metrics

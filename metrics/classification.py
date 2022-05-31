@@ -4,7 +4,7 @@ import torch
 
 
 class Accuracy:
-    def __call__(self, pred: torch.Tesnor, target: torch.Tesnor) -> Dict[str, float]:
+    def __call__(self, pred: torch.Tensor, target: torch.Tensor) -> Dict[str, float]:
         _, predicted = pred.max(1)
 
         total = target.size(0)

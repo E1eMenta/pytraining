@@ -93,7 +93,7 @@ class SimpleTrainer:
                     epoch=self.epoch,
                     iteration=self.iteration,
                     losses={'main': float(loss.item())},
-                    images={key: denormalize(data[key], self.mean, self.std) for key in self.visualise_keys},
+                    images={key: denormalize(data[key][0], self.mean, self.std) for key in self.visualise_keys},
                 )
 
             self.iteration += 1

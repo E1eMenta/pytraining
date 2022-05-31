@@ -68,6 +68,8 @@ class Logger:
             images: Optional[Dict[str, torch.Tensor]] = None
     ):
         self.val_iteration = iteration
+        self.val_epoch = epoch
+        self.val_start = time.time()
 
         if losses is not None:
             for key, value in losses.items():
@@ -93,5 +95,10 @@ class Logger:
 
         for key, value in avg_metrics.items():
             self.writer.add_scalar(f"val_metric/{key}", value, global_step=self.val_iteration)
+
+        print(f"Epoch: {self.val_epoch}. "
+              f"Losses: {avg_losses}. "
+              f"Metrics: {avg_metrics}. "
+              f"Time: {round(time.time() - self.val_start)}.")
 
         return avg_losses, avg_metrics

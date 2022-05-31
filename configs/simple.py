@@ -6,6 +6,7 @@ from torch.utils.data import Dataset
 from torchvision.models import resnet18
 
 from logger.simple import Logger
+from metrics.classification import Accuracy
 from trainers.simple import SimpleTrainer
 
 
@@ -54,6 +55,7 @@ class Config:
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
 
         logger = Logger('/cache/tmp/cifar/logs')
+        metric = Accuracy()
 
         self.trainer = SimpleTrainer(
             model=model,

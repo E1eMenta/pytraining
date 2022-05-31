@@ -119,7 +119,9 @@ class SimpleTrainer:
                     images={key: data[key][0] for key in self.visualise_keys}
                 )
         if self.logger is not None:
-            _, avg_metrics = self.logger.end_val()
+            avg_losses, avg_metrics = self.logger.end_val()
+        else:
+            avg_losses, avg_metrics = None, None
 
         if self.storage is not None:
             self.storage.save(

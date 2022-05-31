@@ -33,6 +33,8 @@ class Logger:
         self.start = time.time()
         self.val_image_counter = 0
         self.val_iteration = 0
+        self.val_epoch = 0
+        self.val_start = 0
 
     def log_train(
             self,

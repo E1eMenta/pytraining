@@ -34,7 +34,6 @@ class Logger:
         self.val_image_counter = 0
         self.val_iteration = 0
         self.val_epoch = 0
-        self.val_start = 0
 
     def log_train(
             self,
@@ -55,7 +54,8 @@ class Logger:
             rounded_losses = {key: round(value, 4) for key, value in losses.items()}
             print(f"Iter: {iteration} (Epoch: {epoch}). "
                   f"Losses: {rounded_losses}. "
-                  f"Time: {round((time.time() - self.start) / 60, 2)}.")
+                  f"Time: {round(time.time() - self.start)}s.")
+            self.start = time.time()
 
         if iteration % self.image_freq == 0 and iteration > 0 and images:
             for key, value in images.items():
@@ -71,7 +71,7 @@ class Logger:
     ):
         self.val_iteration = iteration
         self.val_epoch = epoch
-        self.val_start = time.time()
+        self.start = time.time()
 
         if losses is not None:
             for key, value in losses.items():
@@ -103,6 +103,6 @@ class Logger:
         print(f"Epoch: {self.val_epoch}. "
               f"Losses: {rounded_losses}. "
               f"Metrics: {rounded_metrics}. "
-              f"Time: {round(time.time() - self.val_start)}s.")
+              f"Time: {round(time.time() - self.start)}s.")
 
         return avg_losses, avg_metrics

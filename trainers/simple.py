@@ -115,7 +115,7 @@ class SimpleTrainer:
                 iteration=self.iteration,
                 losses={'main': loss.item()},
                 metrics=metric,
-                images={key: data[key] for key in self.visualise_keys}
+                images={key: data[key][0] for key in self.visualise_keys}
             )
 
         _, avg_metrics = self.logger.end_val()

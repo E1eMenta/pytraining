@@ -1,4 +1,3 @@
-import datetime
 import os
 import time
 from collections import defaultdict
@@ -56,7 +55,7 @@ class Logger:
             rounded_losses = {key: round(value, 4) for key, value in losses.items()}
             print(f"Iter: {iteration} (Epoch: {epoch}). "
                   f"Losses: {rounded_losses}. "
-                  f"Time: {str(datetime.timedelta(seconds=time.time() - self.start)):%Y-%m-%d}.")
+                  f"Time: {round((time.time() - self.start) / 60, 2)}.")
 
         if iteration % self.image_freq == 0 and iteration > 0 and images:
             for key, value in images.items():
